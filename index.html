@@ -1,15 +1,15 @@
 <!DOCTYPE html>
-<html lang="pl">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title id="page-title">V3nn0</title>
+    <title id="page-title"></title>
     <link rel="icon" href="avatar.png">
     <meta name="description" id="page-desc" content="developer · Py · C++ · C# · JS · PHP · SQL · Lua · HTML & CSS">
     <meta name="theme-color" id="meta-theme-color" content="#ffffff">
     <meta property="og:type" content="profile">
-    <meta property="og:site_name" content="V3nn0">
-    <meta property="og:title" content="V3nn0">
+    <meta property="og:site_name" id="og-site" content="">
+    <meta property="og:title" id="og-title" content="">
     <meta property="og:description" content="developer · Py · C++ · C# · JS · PHP · SQL · Lua · HTML & CSS">
     <meta name="twitter:card" content="summary">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
@@ -707,12 +707,20 @@
             50% { height: 16px; }
         }
 
+        /* TERMINAL - FLEXBOX & CUSTOM RESIZE */
         .term {
             position: fixed;
             right: 20px;
             bottom: 20px;
             z-index: 10;
             width: min(360px, calc(100vw - 32px));
+            height: 190px;
+            min-width: 260px;
+            min-height: 140px;
+            max-width: calc(100vw - 16px);
+            max-height: calc(100vh - 16px);
+            display: flex;
+            flex-direction: column;
             border-radius: 12px;
             background: rgba(8, 8, 10, .85);
             backdrop-filter: blur(14px);
@@ -725,11 +733,6 @@
             translate: 0 20px;
             pointer-events: none;
             transition: opacity .6s ease 1s, translate .6s ease 1s;
-            resize: both;
-            min-width: 250px;
-            min-height: 150px;
-            max-width: 90vw;
-            max-height: 90vh;
         }
 
         body.in .term {
@@ -739,12 +742,12 @@
         }
 
         .term.min {
-            min-height: 0;
+            min-height: 0 !important;
             height: auto !important;
-            resize: none;
         }
 
-        .term.min .term-body {
+        .term.min .term-body,
+        .term.min .term-resizer {
             display: none;
         }
 
@@ -753,7 +756,7 @@
         }
 
         .term-bar {
-            cursor: grab;
+            flex: none;
             display: flex;
             align-items: center;
             gap: 6px;
@@ -770,7 +773,6 @@
             font-size: 14px;
             line-height: 1;
             padding: 0 4px;
-            cursor: pointer;
         }
 
         @media (max-width: 600px) {
@@ -781,17 +783,30 @@
         }
 
         .term-bar i {
-            width: 9px;
-            height: 9px;
+            width: 10px;
+            height: 10px;
             border-radius: 50%;
             background: #ff5f57;
+            transition: transform .15s;
+        }
+
+        .term-bar i:hover {
+            transform: scale(1.2);
         }
 
         .term-bar i:nth-child(2) { background: #febc2e; }
         .term-bar i:nth-child(3) { background: #28c840; margin-right: 6px; }
 
+        .term-body {
+            flex: 1;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
         .term-out {
-            height: 118px;
+            flex: 1;
+            min-height: 0;
             overflow-y: auto;
             padding: 8px 12px 0;
             white-space: pre-wrap;
@@ -807,10 +822,11 @@
         .term-out a { color: var(--red-glow); }
 
         .term-in {
+            flex: none;
             display: flex;
             align-items: center;
             gap: 8px;
-            padding: 6px 12px 10px;
+            padding: 6px 22px 10px 12px;
         }
 
         .prompt {
@@ -827,6 +843,34 @@
             color: var(--text);
             font: inherit;
             caret-color: var(--red-glow);
+        }
+
+        .term-resizer {
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            width: 18px;
+            height: 18px;
+            z-index: 2;
+            user-select: none;
+        }
+
+        .term-resizer::after {
+            content: "";
+            position: absolute;
+            right: 4px;
+            bottom: 4px;
+            width: 8px;
+            height: 8px;
+            border-right: 2px solid var(--muted);
+            border-bottom: 2px solid var(--muted);
+            opacity: .6;
+            transition: opacity .2s, border-color .2s;
+        }
+
+        .term-resizer:hover::after {
+            opacity: 1;
+            border-color: var(--red-glow);
         }
 
         #rw {
@@ -990,15 +1034,18 @@
             margin-right: 4px;
         }
     </style>
+
+    <!-- SITE CONFIGURATION -->
     <script>
         window.CONFIG = {
             themeColor: "#ffffff",
             accentColor: "#d3d3d3",
-            username: "V3nn0",
+            username: "bluvs", // Zmienia nick, tytuł strony, stopkę i wszystkie komendy/prompty w terminalu
+            discordId: "265928295793688596", // Discord User ID (wymaga obecności na discord.gg/lanyard)
             avatarPath: "avatar.png",
             musicUrl: "https://api.soundcloud.com/tracks/2402918781",
             trackTitle: "Tax Free — Styl Życia Haram",
-            about: "Opsec skrrrrr",
+            about: "...",
             projects: "projects/  (soon)",
             contactLinks: {
                 discord: "bluvs",
@@ -1009,6 +1056,7 @@
             ]
         };
     </script>
+    <!-- END CONFIGURATION -->
 </head>
 <body>
     <div class="bg"></div>
@@ -1059,8 +1107,8 @@
                 </div>
             </div>
             <div class="vol">
-                <input type="range" id="vol" min="0" max="100" aria-label="głośność">
-                <button id="volBtn" class="vol-btn" aria-label="wycisz">
+                <input type="range" id="vol" min="0" max="100" aria-label="Volume">
+                <button id="volBtn" class="vol-btn" aria-label="Mute">
                     <svg viewBox="0 0 24 24">
                         <path id="volIcon" d=""/>
                     </svg>
@@ -1081,9 +1129,11 @@
         </div>
     </main>
     <div class="term" id="term">
-        <div class="term-bar" id="termBar" title="przeciągnij / zwiń">
-            <i></i><i></i><i></i>
-            guest@<span class="prompt-user"></span>: ~<span class="term-min" id="termMin">–</span>
+        <div class="term-bar" id="termBar" title="Drag / Double-click to maximize">
+            <i id="termClose" title="Minimize"></i>
+            <i id="termYellow" title="Minimize"></i>
+            <i id="termMax" title="Maximize / Restore"></i>
+            guest@<span class="prompt-user"></span>: ~<span class="term-min" id="termMin" title="Minimize / Expand">–</span>
         </div>
         <div class="term-body">
             <div class="term-out" id="termOut"></div>
@@ -1092,6 +1142,7 @@
                 <input id="termIn" autocomplete="off" spellcheck="false" aria-label="terminal">
             </div>
         </div>
+        <div class="term-resizer" id="termResizer" title="Drag to resize"></div>
     </div>
     <iframe id="sc" allow="autoplay; encrypted-media" src=""></iframe>
     <script src="https://w.soundcloud.com/player/api.js"></script>
@@ -1106,7 +1157,7 @@
             const START_MS = 61000;
             const VOLUME = 45;
             const BPM = 140;
-            const DISCORD_ID = '1504822948446601276';
+            const DISCORD_ID = String(config.discordId || '').trim();
             const DISCORD_NAME = config.contactLinks.discord || '';
 
             const esc = s => String(s).replace(/[&<>"]/g, ch => ({
@@ -1116,28 +1167,33 @@
                 '"': '&quot;'
             }[ch]));
 
-            // 1. Inicjalizacja zmiennych CSS i danych z CONFIG
+            const userClean = String(config.username || 'user').trim();
+            const userSlug = userClean.toLowerCase().replace(/[^a-z0-9_-]/g, '') || 'user';
+
+            // 1. Initialize CSS variables and dynamic username strings
             document.documentElement.style.setProperty('--red', config.themeColor);
             document.documentElement.style.setProperty('--red-glow', config.accentColor);
             document.documentElement.style.setProperty('--glitch-color-1', config.themeColor);
             document.documentElement.style.setProperty('--glitch-color-2', config.accentColor);
 
-            $('page-title').textContent = config.username;
+            document.title = userClean;
+            $('page-title').textContent = userClean;
+            $('og-site').setAttribute('content', userClean);
+            $('og-title').setAttribute('content', userClean);
             $('meta-theme-color').setAttribute('content', config.themeColor);
             $('avatar-img').src = config.avatarPath;
-            $('avatar-img').alt = config.username;
+            $('avatar-img').alt = userClean;
 
             const nick = $('nick');
-            nick.textContent = config.username;
-            nick.dataset.text = config.username;
+            nick.textContent = userClean;
+            nick.dataset.text = userClean;
 
             $('trackTitle').textContent = config.trackTitle;
-            $('footer-text').textContent = `</ > coded by ${config.username}`;
+            $('footer-text').textContent = `</ > coded by ${userClean}`;
             document.querySelectorAll('.prompt-user').forEach(el => {
-                el.textContent = config.username.toLowerCase();
+                el.textContent = userSlug;
             });
 
-            // Bezpieczne generowanie tagów (brak XSS)
             const skillsContainer = $('skills-container');
             config.skills.forEach((skill, idx) => {
                 const span = document.createElement('span');
@@ -1152,7 +1208,7 @@
                 skillsContainer.appendChild(span);
             });
 
-            // 2. Generowanie linków i obsługa kopiowania Discorda
+            // 2. Social links and Discord copy
             const linksContainer = $('links-container');
             let dcLinkEl = null;
 
@@ -1160,7 +1216,7 @@
                 if (!DISCORD_NAME) return;
                 const done = () => {
                     if (dcLinkEl) {
-                        dcLinkEl.dataset.tip = 'skopiowano';
+                        dcLinkEl.dataset.tip = 'copied';
                         setTimeout(() => { dcLinkEl.dataset.tip = DISCORD_NAME; }, 1500);
                     }
                     if (cb) cb();
@@ -1209,7 +1265,7 @@
                 linksContainer.appendChild(a);
             }
 
-            // 3. Odtwarzacz SoundCloud (najpierw ustawiamy src, potem tworzymy Widget)
+            // 3. SoundCloud Player
             const scFrame = $('sc');
             scFrame.src = 'https://w.soundcloud.com/player/?url=' + encodeURIComponent(config.musicUrl) + '&auto_play=false&visual=false&show_artwork=false';
 
@@ -1329,7 +1385,7 @@
             }
             $('pp').addEventListener('click', toggle);
 
-            // 4. Efekt dekodowania nicku i ekran startowy (Boot)
+            // 4. Nickname decode & Boot screen
             const GLYPHS = '!<>-_\\/[]{}=+*^?#01ABCDEFXZ$%&';
             function decode(text) {
                 const reveal = [...text].map((_, i) => 8 + i * 5 + Math.random() * 6);
@@ -1353,18 +1409,17 @@
 
             const bootEl = $('boot');
             const bootLog = $('bootLog');
-            const userLower = esc(config.username.toLowerCase());
-            const BOOT_CMDS = [`cd ~/${userLower}`, './load.sh'];
+            const BOOT_CMDS = [`cd ~/${userSlug}`, './load.sh'];
             let booting = true;
             let entered = false;
 
             (async function boot() {
                 const wait = ms => new Promise(r => setTimeout(r, ms));
-                const prompt = `<span class="p">guest@${userLower}</span><span class="dim">:~$</span> `;
+                const prompt = `<span class="p">guest@${esc(userSlug)}</span><span class="dim">:~$</span> `;
                 for (const cmd of BOOT_CMDS) {
                     for (let i = 0; i <= cmd.length; i++) {
                         if (!booting) return;
-                        bootLog.innerHTML = prompt + '<span class="hi">' + cmd.slice(0, i) + '</span><span class="boot-caret"></span>';
+                        bootLog.innerHTML = prompt + '<span class="hi">' + esc(cmd.slice(0, i)) + '</span><span class="boot-caret"></span>';
                         await wait(55);
                     }
                     await wait(350);
@@ -1388,12 +1443,12 @@
                 booting = false;
                 enter.classList.add('hide');
                 body.classList.add('in');
-                decode(config.username);
+                decode(userClean);
                 play();
                 setTimeout(termBoot, 900);
             });
 
-            // 5. Obracanie awatara i Lanyard (Discord status)
+            // 5. Avatar flip & Lanyard WebSocket (Real-time Discord status)
             const flip = $('flip');
             let flipTimer;
             flip.addEventListener('click', () => {
@@ -1406,10 +1461,10 @@
 
             const dcStatus = $('dcStatus');
             const activity = $('activity');
-            const STATUS_PL = {
+            const STATUS_EN = {
                 online: 'online',
-                idle: 'zaraz wracam',
-                dnd: 'nie przeszkadzać',
+                idle: 'idle',
+                dnd: 'do not disturb',
                 offline: 'offline'
             };
             const ICON_GAME = '<svg viewBox="0 0 24 24"><path d="M7 7h10a5 5 0 0 1 4.9 6l-.7 3.4a2.5 2.5 0 0 1-4.3 1.2L14.6 15H9.4l-2.3 2.6a2.5 2.5 0 0 1-4.3-1.2L2.1 13A5 5 0 0 1 7 7Zm0 3v1.5H5.5V13H7v1.5h1.5V13H10v-1.5H8.5V10H7Zm9.5 0a1 1 0 1 0 0 2 1 1 0 0 0 0-2Zm-2 2.5a1 1 0 1 0 0 2 1 1 0 0 0 0-2Z"/></svg>';
@@ -1418,39 +1473,69 @@
             let presence = null;
 
             function renderPresence(d) {
+                if (!d) return;
                 presence = d;
                 const s = d.discord_status || 'offline';
                 dcStatus.style.display = '';
                 dcStatus.dataset.s = s;
-                dcStatus.title = STATUS_PL[s];
+                dcStatus.title = STATUS_EN[s] || 'offline';
                 const game = (d.activities || []).find(a => a.type === 0);
                 const custom = (d.activities || []).find(a => a.type === 4 && a.state);
                 if (game) {
-                    activity.innerHTML = ICON_GAME + 'gra w <b>' + esc(game.name) + '</b>';
+                    activity.innerHTML = ICON_GAME + 'playing <b>' + esc(game.name) + '</b>';
                 } else if (d.listening_to_spotify && d.spotify) {
                     activity.innerHTML = ICON_NOTE + esc(d.spotify.song) + ' — ' + esc(d.spotify.artist);
                 } else if (custom) {
                     activity.innerHTML = ICON_DOT + esc(custom.state);
                 } else {
-                    activity.innerHTML = ICON_DOT + STATUS_PL[s];
+                    activity.innerHTML = ICON_DOT + (STATUS_EN[s] || 'offline');
                 }
             }
 
-            async function pollPresence() {
-                try {
-                    const r = await fetch('https://api.lanyard.rest/v1/users/' + DISCORD_ID);
-                    const j = await r.json();
-                    if (j.success) renderPresence(j.data);
-                } catch (e) {}
-            }
-
             dcStatus.style.display = 'none';
-            if (DISCORD_ID) {
-                pollPresence();
-                setInterval(pollPresence, 15000);
+            if (/^\d{17,20}$/.test(DISCORD_ID)) {
+                let ws = null;
+                let hbTimer = null;
+                let reconnectTimer = null;
+
+                function connectLanyard() {
+                    clearTimeout(reconnectTimer);
+                    ws = new WebSocket('wss://api.lanyard.rest/socket');
+
+                    ws.addEventListener('message', e => {
+                        try {
+                            const msg = JSON.parse(e.data);
+                            if (msg.op === 1) {
+                                ws.send(JSON.stringify({
+                                    op: 2,
+                                    d: { subscribe_to_id: DISCORD_ID }
+                                }));
+                                clearInterval(hbTimer);
+                                hbTimer = setInterval(() => {
+                                    if (ws.readyState === WebSocket.OPEN) {
+                                        ws.send(JSON.stringify({ op: 3 }));
+                                    }
+                                }, msg.d.heartbeat_interval);
+                            } else if (msg.op === 0 && (msg.t === 'INIT_STATE' || msg.t === 'PRESENCE_UPDATE')) {
+                                renderPresence(msg.d);
+                            }
+                        } catch (err) {}
+                    });
+
+                    ws.addEventListener('close', () => {
+                        clearInterval(hbTimer);
+                        reconnectTimer = setTimeout(connectLanyard, 5000);
+                    });
+
+                    ws.addEventListener('error', () => {
+                        ws.close();
+                    });
+                }
+
+                connectLanyard();
             }
 
-            // 6. Terminal i komendy
+            // 6. Terminal commands, Drag & Custom Resize
             const out = $('termOut');
             const input = $('termIn');
             const history = [];
@@ -1467,15 +1552,15 @@
 
             const COMMANDS = {
                 help: () => print([
-                    'dostępne komendy:',
-                    '  about     kim jestem',
-                    '  skills    języki programowania',
-                    '  contact   gdzie mnie znaleźć',
+                    'available commands:',
+                    '  about     who i am',
+                    '  skills    programming languages',
+                    '  contact   where to find me',
                     '  status    discord status',
-                    '  music     play / pauza',
-                    '  discord   kopiuje mój nick',
-                    '  clear     czyści terminal',
-                    '  dontopen  nie otwieraj.'
+                    '  music     play / pause',
+                    '  discord   copy my username',
+                    '  clear     clear terminal',
+                    '  dontopen  do not open.'
                 ].join('\n')),
                 about: () => print(config.about),
                 skills: () => print(config.skills.map(s => s.name).join(' · ')),
@@ -1495,20 +1580,20 @@
                     print(lines.join('\n'), 'res', true);
                 },
                 status: () => {
-                    if (!presence) return print('status niedostępny.', 'err');
+                    if (!presence) return print('status unavailable (not connected to Lanyard).', 'err');
                     const s = presence.discord_status;
-                    print('discord: ' + STATUS_PL[s] + (activity.textContent ? '\n' + activity.textContent : ''));
+                    print('discord: ' + STATUS_EN[s] + (activity.textContent ? '\n' + activity.textContent : ''));
                 },
                 music: () => {
                     toggle();
-                    print(playing ? 'pauza.' : 'gram ♪');
+                    print(playing ? 'paused.' : 'playing...');
                 },
-                discord: () => copyDiscord(() => print(`skopiowano "${config.contactLinks.discord}"`)),
+                discord: () => copyDiscord(() => print(`copied "${config.contactLinks.discord}"`)),
                 whoami: () => print('guest'),
                 ls: () => print(config.projects),
                 sudo: () => print('nice try.', 'err'),
                 dontopen: () => {
-                    print('mówiłem żebyś nie otwierał...', 'err');
+                    print('i told you not to open it...', 'err');
                     setTimeout(ransom, 700);
                 },
                 clear: () => { out.innerHTML = ''; }
@@ -1516,13 +1601,13 @@
 
             function run(raw) {
                 const cmd = raw.trim().toLowerCase();
-                print(`guest@${userLower}:~$ ${raw}`, 'cmd');
+                print(`guest@${userSlug}:~$ ${raw}`, 'cmd');
                 if (!cmd) return;
                 history.push(raw);
                 hIdx = history.length;
                 const fn = COMMANDS[cmd.split(/\s+/)[0]];
                 if (fn) fn();
-                else print(`command not found: ${cmd.split(/\s+/)[0]} — wpisz "help"`, 'err');
+                else print(`command not found: ${cmd.split(/\s+/)[0]} — type "help"`, 'err');
             }
 
             input.addEventListener('keydown', e => {
@@ -1541,14 +1626,57 @@
             const term = $('term');
             const termBar = $('termBar');
             const termMin = $('termMin');
+            const termClose = $('termClose');
+            const termYellow = $('termYellow');
+            const termMax = $('termMax');
+            const termResizer = $('termResizer');
 
             term.addEventListener('click', e => {
-                if (!e.target.closest('#termBar')) input.focus();
+                if (!e.target.closest('#termBar') && !e.target.closest('#termResizer')) {
+                    input.focus();
+                }
             });
 
-            termMin.addEventListener('click', e => {
+            const toggleMinimize = e => {
                 e.stopPropagation();
                 term.classList.toggle('min');
+            };
+
+            termMin.addEventListener('click', toggleMinimize);
+            termClose.addEventListener('click', toggleMinimize);
+            termYellow.addEventListener('click', toggleMinimize);
+
+            let prevBounds = null;
+            function toggleMaximize(e) {
+                if (e) e.stopPropagation();
+                term.classList.remove('min');
+                if (prevBounds) {
+                    term.style.left = prevBounds.left + 'px';
+                    term.style.top = prevBounds.top + 'px';
+                    term.style.width = prevBounds.width + 'px';
+                    term.style.height = prevBounds.height + 'px';
+                    term.style.right = 'auto';
+                    term.style.bottom = 'auto';
+                    prevBounds = null;
+                } else {
+                    const rect = term.getBoundingClientRect();
+                    prevBounds = { left: rect.left, top: rect.top, width: rect.width, height: rect.height };
+                    const w = Math.min(720, window.innerWidth - 32);
+                    const h = Math.min(460, window.innerHeight - 32);
+                    term.style.left = Math.max(16, (window.innerWidth - w) / 2) + 'px';
+                    term.style.top = Math.max(16, (window.innerHeight - h) / 2) + 'px';
+                    term.style.width = w + 'px';
+                    term.style.height = h + 'px';
+                    term.style.right = 'auto';
+                    term.style.bottom = 'auto';
+                }
+                out.scrollTop = out.scrollHeight;
+            }
+
+            termMax.addEventListener('click', toggleMaximize);
+            termBar.addEventListener('dblclick', e => {
+                if (e.target.tagName.toLowerCase() === 'i' || e.target === termMin) return;
+                toggleMaximize();
             });
 
             if (matchMedia('(max-width: 600px)').matches) {
@@ -1559,23 +1687,52 @@
             function termBoot() {
                 if (booted) return;
                 booted = true;
-                print(`welcome to ${userLower}.sh — wpisz "help"`);
+                print(`welcome to ${userSlug}.sh — type "help"`);
             }
 
-            // Przeciąganie terminala
+            // Drag & Resize state
             let isDragging = false, dragOffsetX = 0, dragOffsetY = 0;
+            let isResizing = false, startX = 0, startY = 0, startW = 0, startH = 0;
+
+            function anchorTopLeft() {
+                const rect = term.getBoundingClientRect();
+                term.style.left = rect.left + 'px';
+                term.style.top = rect.top + 'px';
+                term.style.width = rect.width + 'px';
+                if (!term.classList.contains('min')) {
+                    term.style.height = rect.height + 'px';
+                }
+                term.style.right = 'auto';
+                term.style.bottom = 'auto';
+                return rect;
+            }
+
             termBar.addEventListener('mousedown', e => {
                 if (e.target.tagName.toLowerCase() === 'i' || e.target === termMin) return;
+                const rect = anchorTopLeft();
                 isDragging = true;
-                const rect = term.getBoundingClientRect();
                 dragOffsetX = e.clientX - rect.left;
                 dragOffsetY = e.clientY - rect.top;
                 term.style.transition = 'none';
             });
 
+            termResizer.addEventListener('mousedown', e => {
+                e.stopPropagation();
+                e.preventDefault();
+                const rect = anchorTopLeft();
+                isResizing = true;
+                prevBounds = null;
+                startX = e.clientX;
+                startY = e.clientY;
+                startW = rect.width;
+                startH = rect.height;
+                term.style.transition = 'none';
+            });
+
             window.addEventListener('mouseup', () => {
-                if (isDragging) {
+                if (isDragging || isResizing) {
                     isDragging = false;
+                    isResizing = false;
                     term.style.transition = 'opacity .6s ease, translate .6s ease';
                 }
             });
@@ -1617,7 +1774,7 @@
                 const rw = document.createElement('div');
                 rw.id = 'rw';
                 rw.className = 'shake';
-                rw.innerHTML = `<pre class="skull">${SKULL}</pre><h2>YOUR FILES HAVE BEEN ENCRYPTED</h2><div class="sub hax"><span>[!]</span> payload ${userLower}.exe executed · aes-256-cbc · rsa-4096<br><span>[!]</span> 1337 files locked · key: <i>████████████████</i> · uplink 0x1806</div><div class="files" id="rwFiles"></div><div class="timer" id="rwTimer">23:59:59</div>`;
+                rw.innerHTML = `<pre class="skull">${SKULL}</pre><h2>YOUR FILES HAVE BEEN ENCRYPTED</h2><div class="sub hax"><span>[!]</span> payload ${esc(userSlug)}.exe executed · aes-256-cbc · rsa-4096<br><span>[!]</span> 1337 files locked · key: <i>████████████████</i> · uplink 0x1806</div><div class="files" id="rwFiles"></div><div class="timer" id="rwTimer">23:59:59</div>`;
                 body.appendChild(rw);
                 setTimeout(() => rw.classList.remove('shake'), 700);
 
@@ -1626,7 +1783,7 @@
                 let i = 0, left = 86399;
                 const fi = setInterval(() => {
                     const f = FAKE_FILES[i++ % FAKE_FILES.length];
-                    files.insertAdjacentHTML('beforeend', `<div>${esc(f)}<span>.${userLower}</span>  [ENCRYPTED]</div>`);
+                    files.insertAdjacentHTML('beforeend', `<div>${esc(f)}<span>.${esc(userSlug)}</span>  [ENCRYPTED]</div>`);
                     files.scrollTop = files.scrollHeight;
                 }, 90);
 
@@ -1645,7 +1802,7 @@
                     setTimeout(() => {
                         rw.classList.remove('shake');
                         rw.classList.add('joke');
-                        rw.innerHTML = `<div class="joke-box"><div class="joke-cmd"><span>guest@${userLower}:~$</span> kill -9 ${userLower}.exe</div><h2 class="nick" data-text="JUST KIDDING">JUST KIDDING</h2><div class="joke-line"></div><div class="back">[ CLICK TO RETURN ]</div></div>`;
+                        rw.innerHTML = `<div class="joke-box"><div class="joke-cmd"><span>guest@${esc(userSlug)}:~$</span> kill -9 ${esc(userSlug)}.exe</div><h2 class="nick" data-text="JUST KIDDING">JUST KIDDING</h2><div class="joke-line"></div><div class="back">[ CLICK TO RETURN ]</div></div>`;
                         const close = () => {
                             rw.remove();
                             removeEventListener('keydown', onKey);
@@ -1660,7 +1817,7 @@
                 }, 5200);
             }
 
-            // 8. Obsługa myszy, karty 3D i cząsteczek Canvas
+            // 8. Mouse, 3D card & Canvas particles
             const card = $('card');
             const cursor = $('cursor');
             const mouse = { x: -100, y: -100 };
@@ -1672,11 +1829,17 @@
                     const newY = Math.max(0, Math.min(e.clientY - dragOffsetY, window.innerHeight - term.offsetHeight));
                     term.style.left = newX + 'px';
                     term.style.top = newY + 'px';
-                    term.style.bottom = 'auto';
-                    term.style.right = 'auto';
+                } else if (isResizing) {
+                    const rect = term.getBoundingClientRect();
+                    const maxW = window.innerWidth - rect.left - 8;
+                    const maxH = window.innerHeight - rect.top - 8;
+                    const newW = Math.max(260, Math.min(startW + (e.clientX - startX), maxW));
+                    const newH = Math.max(140, Math.min(startH + (e.clientY - startY), maxH));
+                    term.style.width = newW + 'px';
+                    term.style.height = newH + 'px';
                 }
 
-                if (entered) {
+                if (entered && !isDragging && !isResizing) {
                     const x = (e.clientX / innerWidth - .5) * 14;
                     const y = (e.clientY / innerHeight - .5) * -14;
                     card.style.transform = `perspective(900px) rotateY(${x}deg) rotateX(${y}deg)`;
@@ -1688,7 +1851,7 @@
                 mouse.x = e.clientX;
                 mouse.y = e.clientY;
                 cursor.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
-                cursor.classList.toggle('hover', !!e.target.closest('a, button, input, #enter, .tag, #flip, #termMin'));
+                cursor.classList.toggle('hover', isResizing || !!e.target.closest('a, button, input, #enter, .tag, #flip, #termMin, #termResizer, .term-bar i'));
             });
 
             document.addEventListener('mouseleave', () => {
