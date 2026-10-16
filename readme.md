@@ -2,6 +2,8 @@
 
 > A customizable, cyberpunk-inspired personal bio website featuring animated visuals, a live Discord presence, an interactive terminal, and a built-in SoundCloud music player.
 A minimal, single-page personal website designed to showcase your identity, skills, social links, and current Discord activity — with a dark aesthetic, glitch effects, and a terminal-inspired interface.
+
+
 Preview: https://superb-horse-71bf06.netlify.app/
 
 **No frameworks. No build tools. Just HTML, CSS, and vanilla JavaScript.**
