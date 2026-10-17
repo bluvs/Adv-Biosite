@@ -1,47 +1,54 @@
-# ⌘ Personal Bio — Terminal Edition
+# Personal Bio — Terminal Edition
 
 > A customizable, cyberpunk-inspired personal bio website featuring animated visuals, a live Discord presence, an interactive terminal, and a built-in SoundCloud music player.
-A minimal, single-page personal website designed to showcase your identity, skills, social links, and current Discord activity — with a dark aesthetic, glitch effects, and a terminal-inspired interface.
 
+A minimal, single-page personal website designed to showcase your identity, skills, social links, and current Discord activity — with a dark aesthetic, glitch effects, and a terminal-inspired interface.
 
 Preview: https://superb-horse-71bf06.netlify.app/
 
 **No frameworks. No build tools. Just HTML, CSS, and vanilla JavaScript.**
 
-## ✨ Features
+---
 
-- **🖥️ Terminal Boot Screen** — An animated startup sequence with simulated commands and a click-to-enter transition.
-- **👤 Animated Profile Card** — A profile avatar with a rotating gradient ring, glowing effects, a 3D flip animation, and a customizable username.
-- **⚡ Glitch & Neon Effects** — Animated text, glowing accents, scanlines, background effects, and smooth transitions.
-- **🎨 Customizable Theme** — Change the primary and accent colors to match your personal aesthetic.
-- **🟢 Live Discord Presence** — Display your Discord status and activity in real time using the [Lanyard API](https://lanyard.rest/).
-- **🎵 SoundCloud Music Player** — An integrated audio player with play/pause, volume control, seeking, track progress, and animated equalizer bars.
-- **🔗 Social Links** — Configurable Discord, Telegram, TikTok, and other supported profile links.
-- **💻 Interactive Terminal** — A draggable, resizable terminal window with custom commands and profile information.
-- **⌨️ Dynamic Username** — Your configured username automatically updates the page title, profile heading, footer, and terminal prompts.
-- **🧩 Custom Skills** — Display programming languages, technologies, or any other tags with optional icons.
-- **📱 Responsive Design** — Adapts to different screen sizes, including mobile devices.
-- **🖱️ Custom Cursor** — A glowing cursor effect on devices with a mouse or trackpad.
-- **🔍 Social Preview Metadata** — Open Graph and theme-color metadata for browser and social sharing previews.
+## Features
 
-## 🛠️ Tech Stack
+- **Terminal Boot Screen** — An animated startup sequence with simulated commands and a click-to-enter transition.
+- **Animated Profile Card** — A profile avatar with a rotating gradient ring, glowing effects, a 3D flip animation, and a customizable username.
+- **Glitch & Neon Effects** — Animated text, glowing accents, scanlines, background effects, and smooth transitions.
+- **Customizable Theme** — Change the primary and accent colors to match your personal aesthetic.
+- **Live Discord Presence** — Display your Discord status and activity in real time using the [Lanyard API](https://lanyard.rest/).
+- **SoundCloud Music Player** — An integrated audio player with play/pause, volume control, seeking, track progress, and animated equalizer bars.
+- **Dynamic Social Links & Auto-SVG Resolver** — Add any social platform in the config. Built-in icons load instantly, while additional platforms are automatically fetched and sanitized via Simple Icons CDN.
+- **Interactive Terminal** — A draggable, resizable terminal window with custom commands, history navigation, and profile information.
+- **Dynamic Username** — Your configured username automatically updates the page title, profile heading, footer, and terminal prompts.
+- **Custom Skills** — Display programming languages, technologies, or any other tags with optional icons.
+- **Responsive Design** — Adapts to different screen sizes, including mobile devices.
+- **Custom Cursor** — A glowing cursor with a particle trail on devices with a mouse or trackpad.
+- **Social Preview Metadata** — Open Graph and theme-color metadata for browser and social sharing previews.
+
+---
+
+## Tech Stack
 
 | Technology | Purpose |
 | --- | --- |
 | HTML5 | Website structure |
 | CSS3 | Styling, animations, effects, and responsive layout |
-| Vanilla JavaScript | Configuration, interactions, and dynamic content |
+| Vanilla JavaScript | Configuration, DOM manipulation, and dynamic content |
 | WebSocket | Real-time Discord presence updates |
 | Lanyard API | Discord status and activity data |
 | SoundCloud Widget API | Embedded music playback |
+| Simple Icons CDN | Automatic SVG fallback for custom social links |
 | Google Fonts | Orbitron and JetBrains Mono typography |
 
-## 🚀 Getting Started
+---
+
+## Getting Started
 
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/YOUR_REPOSITORY.git
+git clone [https://github.com/YOUR_USERNAME/YOUR_REPOSITORY.git](https://github.com/YOUR_USERNAME/YOUR_REPOSITORY.git)
 cd YOUR_REPOSITORY
 ```
 
@@ -49,7 +56,7 @@ Replace `YOUR_USERNAME` and `YOUR_REPOSITORY` with your GitHub details.
 
 ### 2. Configure your profile
 
-Open `index.html` and find the `SITE CONFIGURATION` section near the top of the file.
+Open `index.html` and find the `SITE CONFIGURATION` section near the top of the file:
 
 ```js
 window.CONFIG = {
@@ -60,26 +67,25 @@ window.CONFIG = {
     discordId: "YOUR_DISCORD_ID",
     avatarPath: "avatar.png",
 
-    musicUrl: "https://api.soundcloud.com/tracks/YOUR_TRACK_ID",
+    musicUrl: "[https://soundcloud.com/artist/track](https://soundcloud.com/artist/track)",
     trackTitle: "Your Favorite Song",
 
     about: "A short description about yourself",
-    projects: "Your projects",
+    projects: "projects/  (soon)",
 
     contactLinks: {
         discord: "yourdiscord",
-        telegram: "https://t.me/yourusername"
+        telegram: "[https://t.me/yourusername](https://t.me/yourusername)",
+        github: "[https://github.com/yourusername](https://github.com/yourusername)"
     },
 
     skills: [
-        { name: "JavaScript", icon: "⚡" },
-        { name: "Python", icon: "🐍" },
-        { name: "HTML & CSS", icon: "🌐" }
+        { name: "JavaScript", icon: "" },
+        { name: "Python", icon: "" },
+        { name: "HTML & CSS", icon: "" }
     ]
 };
 ```
-
-This is an example configuration. Keep the existing structure in your `index.html` and replace the values with your own.
 
 ### 3. Add your avatar
 
@@ -100,7 +106,7 @@ You can open `index.html` directly in your browser. For a more consistent local 
 python -m http.server 8000
 ```
 
-Then visit [http://localhost:8000](http://localhost:8000).
+Then visit `http://localhost:8000`.
 
 ### 5. Deploy with GitHub Pages
 
@@ -112,9 +118,11 @@ Then visit [http://localhost:8000](http://localhost:8000).
 
 No compilation or package installation is required.
 
-## ⚙️ Configuration Guide
+---
 
-Everything is designed to be easy to personalize from the `window.CONFIG` object.
+## Configuration Guide
+
+Everything is controlled from the `window.CONFIG` object.
 
 | Option | Description |
 | --- | --- |
@@ -126,135 +134,145 @@ Everything is designed to be easy to personalize from the `window.CONFIG` object
 | `musicUrl` | SoundCloud track URL |
 | `trackTitle` | Custom title displayed in the player |
 | `about` | Text returned by the terminal's `about` command |
-| `projects` | Project information reserved for customization |
-| `contactLinks` | Social profiles and contact information |
+| `projects` | Text returned by the terminal's `ls` command |
+| `contactLinks` | Key-value object of social profiles and handles |
 | `skills` | Array of skills displayed on the profile card |
 
-### 🎨 Changing the colors
+### Changing the colors
 
-For example, to switch to a red theme:
+To switch to a red theme:
 
 ```js
 themeColor: "#ff003c",
 accentColor: "#ff3355",
 ```
 
-You can use any valid CSS color value, including HEX, RGB, and HSL.
+Any valid CSS color value (HEX, RGB, HSL) is supported.
 
-### 🧑 Changing your skills
+### Changing your skills
 
 Add or remove entries in the `skills` array:
 
 ```js
 skills: [
-    { name: "Python", icon: "🐍" },
-    { name: "C++", icon: "⚙️" },
-    { name: "JavaScript", icon: "⚡" },
-    { name: "SQL", icon: "🗄️" }
+    { name: "Python", icon: "" },
+    { name: "C++", icon: "" },
+    { name: "JavaScript", icon: "" },
+    { name: "SQL", icon: "" }
 ]
 ```
 
-Each entry contains a `name` and an optional `icon`. Set `icon` to an empty string if you prefer text-only tags.
+Each entry contains a `name` and an optional `icon` prefix. Set `icon` to `""` for text-only tags.
 
-### 🔗 Configuring social links
+### Configuring social links (Dynamic SVG System)
 
-The website supports Discord, TikTok, and Telegram links in its current implementation.
+The `contactLinks` object dynamically generates buttons and terminal entries based on the keys you provide:
 
 ```js
 contactLinks: {
     discord: "yourdiscord",
-    telegram: "https://t.me/yourusername",
-    tiktok: "https://www.tiktok.com/@yourusername"
+    telegram: "[https://t.me/yourusername](https://t.me/yourusername)",
+    github: "[https://github.com/yourusername](https://github.com/yourusername)",
+    tiktok: "[https://www.tiktok.com/@yourusername](https://www.tiktok.com/@yourusername)",
+    steam: "[https://steamcommunity.com/id/yourusername](https://steamcommunity.com/id/yourusername)",
+    reddit: "[https://www.reddit.com/user/yourusername](https://www.reddit.com/user/yourusername)"
 }
 ```
 
-- **Discord:** Clicking the icon copies the configured Discord username to the clipboard.
-- **Telegram:** Opens the configured URL.
-- **TikTok:** Opens the configured profile URL.
+How it works:
+- **Zero-latency built-in icons:** `discord`, `telegram`, `github`, `tiktok`, `youtube`, `x` (`twitter`), `instagram`, `steam`, and `spotify` are bundled directly in the script.
+- **Automatic CDN fallback:** Any other platform key (e.g., `reddit`, `gitlab`, `twitch`, `linkedin`) is automatically fetched from Simple Icons CDN, parsed safely via `DOMParser` (preventing XSS), and injected as a vector path.
+- **Smart click behavior:**
+  - Values starting with `http://` or `https://` open as external links in a new tab.
+  - Plain text values (such as a Discord username) are automatically copied to the clipboard when clicked, showing a `copied` tooltip.
+- **Terminal sync:** All configured links are automatically formatted and aligned in the terminal's `contact` command.
 
-Optional links are rendered when their configuration values are present. The existing Discord integration expects a username for the copy action, rather than a Discord invite URL.
+### Setting up music
 
-### 🎵 Setting up music
-
-Set `musicUrl` to your SoundCloud track URL and `trackTitle` to the name you want displayed.
+Set `musicUrl` to a valid SoundCloud track URL and `trackTitle` to the display name:
 
 ```js
-musicUrl: "https://api.soundcloud.com/tracks/YOUR_TRACK_ID",
+musicUrl: "[https://soundcloud.com/artist/track-name](https://soundcloud.com/artist/track-name)",
 trackTitle: "Artist — Track Name"
 ```
 
-The player uses the SoundCloud Widget API. Playback depends on the availability and embedding permissions of the selected track, and browsers may require a user interaction before audio can play.
+The player uses the SoundCloud Widget API. Playback depends on the availability and embedding permissions of the selected track.
 
-## 💻 Interactive Terminal
+---
 
-The website includes a terminal-inspired window with a command prompt, command history, resizing, dragging, and minimize/maximize controls.
+## Interactive Terminal
 
-Type `help` into the terminal to see the available commands.
+The website includes a draggable, resizable terminal window with command history (`ArrowUp` / `ArrowDown`) and window controls.
+
+Type `help` into the terminal to list the main commands:
 
 | Command | Description |
 | --- | --- |
 | `help` | List available commands |
 | `about` | Display your configured description |
 | `skills` | Display your configured skills |
-| `contact` | Show configured contact information |
-| `status` | Check your Discord presence |
+| `contact` | List all configured social links and handles |
+| `status` | Check your live Discord presence |
 | `music` | Toggle music playback |
-| `discord` | Copy your Discord username |
+| `discord` | Copy your Discord username to the clipboard |
+| `whoami` | Print current terminal user (`guest`) |
+| `ls` | List configured projects |
+| `sudo` | Permission check easter egg |
 | `clear` | Clear the terminal output |
-| `dontopen` | Trigger a playful visual easter egg |
+| `dontopen` | Trigger a full-screen visual easter egg |
 
-The terminal is an interactive front-end feature, not a real operating-system shell. Its commands do not execute system commands on your computer.
+The terminal is a front-end simulation and does not execute system commands.
 
-## 🟢 Discord Presence Setup
+---
 
-The live presence feature uses [Lanyard](https://lanyard.rest/) to retrieve Discord status and activity updates.
+## Discord Presence Setup
+
+The live presence feature uses [Lanyard](https://lanyard.rest/) over WebSocket to retrieve real-time Discord status updates.
 
 1. Join the [Lanyard Discord server](https://discord.gg/lanyard).
-2. Find your Discord User ID. Enable Developer Mode in Discord, then right-click your profile and select **Copy User ID**.
-3. Set `discordId` in `window.CONFIG` to your numeric user ID.
-4. Open the website and check your profile status.
+2. Enable Developer Mode in Discord (**User Settings → Advanced → Developer Mode**), right-click your profile, and select **Copy User ID**.
+3. Paste your numeric ID into `discordId` inside `window.CONFIG`.
 
-The integration can display online, idle, Do Not Disturb, and offline states, along with supported activity information such as games, Spotify listening, and custom status.
+Supported states include `online`, `idle`, `dnd`, and `offline`, along with active game status, Spotify playback, or custom status text.
 
-**Note:** Presence data depends on Lanyard availability, Discord activity visibility, and your account's current status. It may not always be available.
+---
 
-## 📂 Project Structure
+## Project Structure
 
 ```text
 .
-├── index.html      # Main website, styling, scripts and configuration
-├── avatar.png      # Your profile image
+├── index.html      # Main website, styling, scripts, and configuration
+├── avatar.png      # Profile image
 └── README.md       # Project documentation
 ```
 
-The project is intentionally lightweight. Most customization happens directly in `index.html`, while your avatar is stored as a separate asset.
+---
 
-## 🔒 Privacy & Third-Party Services
+## Privacy & Third-Party Services
 
-This website runs primarily in the visitor's browser. However, some features rely on external services:
+This website runs entirely in the visitor's browser, utilizing the following external services:
 
-- **Lanyard:** Provides Discord presence information for the configured user ID.
-- **SoundCloud:** Provides embedded audio playback.
-- **Google Fonts:** Loads the fonts used by the interface.
+- **Lanyard API:** Fetches real-time Discord presence data for the configured User ID.
+- **SoundCloud Widget API:** Streams embedded audio.
+- **Simple Icons CDN:** Queried only when a social platform key in `contactLinks` is not found in the local icon dictionary.
+- **Google Fonts:** Loads the `Orbitron` and `JetBrains Mono` fonts.
 
-Review these services and their privacy policies before deploying your own version. Do not add private credentials, access tokens, or other secrets to a public repository.
+Do not store private credentials, API keys, or access tokens in `index.html`.
 
-## 🤝 Contributing
+---
 
-Contributions, improvements, bug reports, and feature suggestions are welcome!
+## Contributing
 
 1. Fork the repository.
-2. Create a branch for your changes.
-3. Make your changes and test them in a browser.
-4. Submit a pull request with a clear description.
+2. Create a feature branch.
+3. Commit your changes and test them in a browser.
+4. Open a pull request with a clear description of the changes.
 
-Ideas for future improvements include additional themes, more social integrations, accessibility improvements, and expanded profile customization.
+---
 
-## 📜 License
+## License
 
-This project is intended to be open source. Add a `LICENSE` file to the repository to specify the permissions and conditions for using, modifying, and distributing the code.
-
-Until a license is added, do not assume that the repository grants permission to reuse or redistribute the code.
+Add a `LICENSE` file (e.g., MIT) to the repository to specify the permissions and conditions for using, modifying, and distributing the code.
 
 ---
 
