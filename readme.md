@@ -48,11 +48,9 @@ Preview: https://superb-horse-71bf06.netlify.app/
 ### 1. Clone the repository
 
 ```bash
-git clone [https://github.com/YOUR_USERNAME/YOUR_REPOSITORY.git](https://github.com/YOUR_USERNAME/YOUR_REPOSITORY.git)
-cd YOUR_REPOSITORY
+git clone https://github.com/bluvs/Adv-Biosite.git
+cd Adv-Biosite
 ```
-
-Replace `YOUR_USERNAME` and `YOUR_REPOSITORY` with your GitHub details.
 
 ### 2. Configure your profile
 
@@ -67,7 +65,7 @@ window.CONFIG = {
     discordId: "YOUR_DISCORD_ID",
     avatarPath: "avatar.png",
 
-    musicUrl: "[https://soundcloud.com/artist/track](https://soundcloud.com/artist/track)",
+    musicUrl: "https://soundcloud.com/artist/track",
     trackTitle: "Your Favorite Song",
 
     about: "A short description about yourself",
@@ -75,8 +73,8 @@ window.CONFIG = {
 
     contactLinks: {
         discord: "yourdiscord",
-        telegram: "[https://t.me/yourusername](https://t.me/yourusername)",
-        github: "[https://github.com/yourusername](https://github.com/yourusername)"
+        telegram: "https://t.me/yourusername",
+        github: "https://github.com/yourusername"
     },
 
     skills: [
