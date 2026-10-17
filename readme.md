@@ -268,12 +268,6 @@ Do not store private credentials, API keys, or access tokens in `index.html`.
 
 ---
 
-## License
-
-Add a `LICENSE` file (e.g., MIT) to the repository to specify the permissions and conditions for using, modifying, and distributing the code.
-
----
-
 <p align="center">
   <b>Made for developers who like their profiles a little different.</b>
   <br />
