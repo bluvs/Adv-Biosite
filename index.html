@@ -495,6 +495,7 @@
         .links {
             display: flex;
             justify-content: center;
+            flex-wrap: wrap;
             gap: 12px;
         }
 
@@ -1159,7 +1160,7 @@
             const VOLUME = 45;
             const BPM = 140;
             const DISCORD_ID = String(config.discordId || '').trim();
-            const DISCORD_NAME = config.contactLinks.discord || '';
+            const DISCORD_NAME = config.contactLinks?.discord || '';
 
             const esc = s => String(s).replace(/[&<>"]/g, ch => ({
                 '&': '&amp;',
@@ -1209,62 +1210,114 @@
                 skillsContainer.appendChild(span);
             });
 
-            // 2. Social links and Discord copy
+            // 2. Dynamic Social Links & Safe SVG Resolver
             const linksContainer = $('links-container');
             let dcLinkEl = null;
 
-            function copyDiscord(cb) {
-                if (!DISCORD_NAME) return;
+            const SVG_PATHS = {
+                discord: 'M20.3 4.4A19.8 19.8 0 0 0 15.4 3l-.6 1.3a18.3 18.3 0 0 0-5.5 0L8.6 3a19.7 19.7 0 0 0-4.9 1.4C.6 9 -.3 13.5.1 18a19.9 19.9 0 0 0 6 3l1.3-2a13 13 0 0 1-2-1l.5-.4a14.2 14.2 0 0 0 12.2 0l.5.4c-.6.4-1.3.7-2 1l1.3 2a19.8 19.8 0 0 0 6-3c.5-5.2-.9-9.7-3.6-13.6ZM8 15.3c-1.2 0-2.2-1.1-2.2-2.4S6.8 10.5 8 10.5s2.2 1.1 2.2 2.4-1 2.4-2.2 2.4Zm8 0c-1.2 0-2.2-1.1-2.2-2.4s1-2.4 2.2-2.4 2.2 1.1 2.2 2.4-1 2.4-2.2 2.4Z',
+                telegram: 'M21.9 4.3 18.7 19.4c-.2 1-.9 1.3-1.7.8l-4.8-3.6-2.3 2.2c-.3.3-.5.5-1 .5l.3-4.9 8.9-8c.4-.3-.1-.5-.6-.2L6.5 13.1 1.8 11.6c-1-.3-1-1 .2-1.5L20.5 3c.9-.3 1.6.2 1.4 1.3Z',
+                github: 'M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2Z',
+                tiktok: 'M19.6 6.7a4.8 4.8 0 0 1-3.8-4.2V2h-3.4v13.4a2.9 2.9 0 1 1-2-2.8V9.2a6.3 6.3 0 1 0 5.4 6.2V8.6a8.2 8.2 0 0 0 3.8 1.2V6.7Z',
+                youtube: 'M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2 31.4 31.4 0 0 0 0 12a31.4 31.4 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1A31.4 31.4 0 0 0 24 12a31.4 31.4 0 0 0-.5-5.8ZM9.6 15.6V8.4l6.3 3.6-6.3 3.6Z',
+                x: 'M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z',
+                twitter: 'M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z',
+                instagram: 'M12 2.2c3.2 0 3.6 0 4.9.1 3.3.1 4.8 1.7 4.9 4.9.1 1.3.1 1.6.1 4.8 0 3.2 0 3.6-.1 4.8-.1 3.2-1.7 4.8-4.9 4.9-1.3.1-1.6.1-4.9.1-3.2 0-3.6 0-4.8-.1-3.3-.1-4.8-1.7-4.9-4.9-.1-1.3-.1-1.6-.1-4.8 0-3.2 0-3.6.1-4.8.1-3.2 1.7-4.8 4.9-4.9 1.2-.1 1.6-.1 4.8-.1ZM12 0C8.7 0 8.3 0 7.1.1 2.7.3.3 2.7.1 7.1 0 8.3 0 8.7 0 12s0 3.7.1 4.9c.2 4.4 2.6 6.8 7 7 1.2.1 1.6.1 4.9.1s3.7 0 4.9-.1c4.4-.2 6.8-2.6 7-7 .1-1.2.1-1.6.1-4.9s0-3.7-.1-4.9c-.2-4.4-2.6-6.8-7-7C15.7 0 15.3 0 12 0Zm0 5.8a6.2 6.2 0 1 0 0 12.4 6.2 6.2 0 0 0 0-12.4ZM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8Zm6.4-11.8a1.4 1.4 0 1 0 0 2.8 1.4 1.4 0 0 0 0-2.8Z',
+                steam: 'M12 2a10 10 0 0 0-10 9.3l5.4 2.2a2.8 2.8 0 0 1 2.6-.5l2.4-3.5v-.1a3.8 3.8 0 1 1 3.8 3.8h-.1l-3.4 2.5c0 .2 0 .4-.1.6a2.8 2.8 0 0 1-5.5-.6L2.4 14A10 10 0 1 0 12 2zm-4 15.2l-1.2-.5a2.1 2.1 0 0 0 4 .2 2.1 2.1 0 0 0-1.1-2.7l-1.2-.5a1.6 1.6 0 1 1 1.2 3 1.6 1.6 0 0 1-1.7.5zm8.2-6a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z',
+                spotify: 'M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm4.6 14.4c-.2.3-.6.4-.9.2-2.5-1.5-5.6-1.9-9.3-1-.4.1-.7-.2-.8-.5-.1-.4.2-.7.5-.8 4-.9 7.5-.5 10.3 1.2.3.2.4.6.2.9zm1.2-2.7c-.2.4-.7.5-1.1.3-2.8-1.7-7.1-2.2-10.4-1.2-.4.1-.9-.1-1-.5-.1-.4.1-.9.5-1 3.8-1.1 8.5-.6 11.7 1.4.4.1.5.6.3 1zm.1-2.8C14.6 8.9 9.2 8.7 6 9.7c-.5.2-1-.1-1.2-.6-.2-.5.1-1 .6-1.2 3.7-1.1 9.7-.9 13.5 1.3.5.3.6.8.4 1.3-.3.5-.9.6-1.4.4z',
+                default: 'M3.9 12c0-1.7 1.4-3.1 3.1-3.1h4V7H7c-2.8 0-5 2.2-5 5s2.2 5 5 5h4v-1.9H7c-1.7 0-3.1-1.4-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.7 0 3.1 1.4 3.1 3.1s-1.4 3.1-3.1 3.1h-4V17h4c2.8 0 5-2.2 5-5s-2.2-5-5-5z'
+            };
+
+            function isSafeUrl(str) {
+                try {
+                    const u = new URL(str);
+                    return u.protocol === 'http:' || u.protocol === 'https:';
+                } catch {
+                    return false;
+                }
+            }
+
+            function getHandle(val) {
+                const s = String(val || '').trim().replace(/\/+$/, '');
+                if (!isSafeUrl(s)) return s;
+                const last = s.split('/').pop() || s;
+                return last.startsWith('@') ? last : '@' + last;
+            }
+
+            function copyText(text, linkEl, fallbackTip, cb) {
+                if (!text) return;
                 const done = () => {
-                    if (dcLinkEl) {
-                        dcLinkEl.dataset.tip = 'copied';
-                        setTimeout(() => { dcLinkEl.dataset.tip = DISCORD_NAME; }, 1500);
+                    if (linkEl) {
+                        linkEl.dataset.tip = 'copied';
+                        setTimeout(() => { linkEl.dataset.tip = fallbackTip; }, 1500);
                     }
                     if (cb) cb();
                 };
                 if (navigator.clipboard) {
-                    navigator.clipboard.writeText(DISCORD_NAME).then(done, done);
+                    navigator.clipboard.writeText(text).then(done, done);
                 } else {
                     done();
                 }
             }
 
-            if (config.contactLinks.discord) {
-                const a = document.createElement('a');
-                a.href = '#';
-                a.id = 'discord';
-                a.dataset.tip = config.contactLinks.discord;
-                a.setAttribute('aria-label', 'Discord');
-                a.innerHTML = '<svg viewBox="0 0 24 24"><path d="M20.3 4.4A19.8 19.8 0 0 0 15.4 3l-.6 1.3a18.3 18.3 0 0 0-5.5 0L8.6 3a19.7 19.7 0 0 0-4.9 1.4C.6 9 -.3 13.5.1 18a19.9 19.9 0 0 0 6 3l1.3-2a13 13 0 0 1-2-1l.5-.4a14.2 14.2 0 0 0 12.2 0l.5.4c-.6.4-1.3.7-2 1l1.3 2a19.8 19.8 0 0 0 6-3c.5-5.2-.9-9.7-3.6-13.6ZM8 15.3c-1.2 0-2.2-1.1-2.2-2.4S6.8 10.5 8 10.5s2.2 1.1 2.2 2.4-1 2.4-2.2 2.4Zm8 0c-1.2 0-2.2-1.1-2.2-2.4s1-2.4 2.2-2.4 2.2 1.1 2.2 2.4-1 2.4-2.2 2.4Z"/></svg>';
-                a.addEventListener('click', e => {
-                    e.preventDefault();
-                    copyDiscord();
-                });
-                dcLinkEl = a;
-                linksContainer.appendChild(a);
+            function copyDiscord(cb) {
+                copyText(DISCORD_NAME, dcLinkEl, DISCORD_NAME, cb);
             }
 
-            if (config.contactLinks.tiktok) {
-                const a = document.createElement('a');
-                a.href = config.contactLinks.tiktok;
-                a.target = '_blank';
-                a.rel = 'noopener noreferrer';
-                a.dataset.tip = '@' + config.contactLinks.tiktok.split('@').pop();
-                a.setAttribute('aria-label', 'TikTok');
-                a.innerHTML = '<svg viewBox="0 0 24 24"><path d="M19.6 6.7a4.8 4.8 0 0 1-3.8-4.2V2h-3.4v13.4a2.9 2.9 0 1 1-2-2.8V9.2a6.3 6.3 0 1 0 5.4 6.2V8.6a8.2 8.2 0 0 0 3.8 1.2V6.7Z"/></svg>';
-                linksContainer.appendChild(a);
+            function resolveIcon(platform, pathEl) {
+                const key = platform.toLowerCase().replace(/[^a-z0-9]/g, '');
+                if (SVG_PATHS[key]) {
+                    pathEl.setAttribute('d', SVG_PATHS[key]);
+                    return;
+                }
+                pathEl.setAttribute('d', SVG_PATHS.default);
+                fetch(`https://cdn.simpleicons.org/${encodeURIComponent(key)}`)
+                    .then(r => r.ok ? r.text() : Promise.reject())
+                    .then(svgText => {
+                        const doc = new DOMParser().parseFromString(svgText, 'image/svg+xml');
+                        const d = doc.querySelector('path')?.getAttribute('d');
+                        if (d) pathEl.setAttribute('d', d);
+                    })
+                    .catch(() => {});
             }
 
-            if (config.contactLinks.telegram) {
+            Object.entries(config.contactLinks || {}).forEach(([platform, rawVal]) => {
+                const val = String(rawVal || '').trim();
+                if (!val) return;
+
                 const a = document.createElement('a');
-                a.href = config.contactLinks.telegram;
-                a.target = '_blank';
-                a.rel = 'noopener noreferrer';
-                a.dataset.tip = '@' + config.contactLinks.telegram.split('/').pop();
-                a.setAttribute('aria-label', 'Telegram');
-                a.innerHTML = '<svg viewBox="0 0 24 24"><path d="M21.9 4.3 18.7 19.4c-.2 1-.9 1.3-1.7.8l-4.8-3.6-2.3 2.2c-.3.3-.5.5-1 .5l.3-4.9 8.9-8c.4-.3-.1-.5-.6-.2L6.5 13.1 1.8 11.6c-1-.3-1-1 .2-1.5L20.5 3c.9-.3 1.6.2 1.4 1.3Z"/></svg>';
+                const key = platform.toLowerCase().trim();
+                const tip = getHandle(val);
+
+                a.dataset.tip = tip;
+                a.setAttribute('aria-label', platform);
+
+                if (isSafeUrl(val)) {
+                    a.href = val;
+                    a.target = '_blank';
+                    a.rel = 'noopener noreferrer';
+                } else {
+                    a.href = '#';
+                    a.addEventListener('click', e => {
+                        e.preventDefault();
+                        copyText(val, a, tip);
+                    });
+                }
+
+                if (key === 'discord') {
+                    a.id = 'discord';
+                    dcLinkEl = a;
+                }
+
+                const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                svg.setAttribute('viewBox', '0 0 24 24');
+                const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                resolveIcon(key, path);
+                svg.appendChild(path);
+                a.appendChild(svg);
+
                 linksContainer.appendChild(a);
-            }
+            });
 
             // 3. SoundCloud Player
             const scFrame = $('sc');
@@ -1566,18 +1619,16 @@
                 about: () => print(config.about),
                 skills: () => print(config.skills.map(s => s.name).join(' · ')),
                 contact: () => {
-                    const lines = [];
-                    if (config.contactLinks.discord) {
-                        lines.push('discord   ' + esc(config.contactLinks.discord));
-                    }
-                    if (config.contactLinks.telegram) {
-                        const tgUser = esc(config.contactLinks.telegram.split('/').pop());
-                        lines.push(`telegram  <a href="${esc(config.contactLinks.telegram)}" target="_blank" rel="noopener noreferrer">@${tgUser}</a>`);
-                    }
-                    if (config.contactLinks.tiktok) {
-                        const ttUser = esc(config.contactLinks.tiktok.split('@').pop());
-                        lines.push(`tiktok    <a href="${esc(config.contactLinks.tiktok)}" target="_blank" rel="noopener noreferrer">@${ttUser}</a>`);
-                    }
+                    const entries = Object.entries(config.contactLinks || {});
+                    const maxLen = entries.reduce((m, [k]) => Math.max(m, k.length), 0);
+                    const lines = entries.map(([k, v]) => {
+                        const val = String(v || '').trim();
+                        const label = esc(k.padEnd(maxLen + 2, ' '));
+                        if (isSafeUrl(val)) {
+                            return `${label}<a href="${esc(val)}" target="_blank" rel="noopener noreferrer">${esc(getHandle(val))}</a>`;
+                        }
+                        return `${label}${esc(val)}`;
+                    });
                     print(lines.join('\n'), 'res', true);
                 },
                 status: () => {
@@ -1589,7 +1640,7 @@
                     toggle();
                     print(playing ? 'paused.' : 'playing...');
                 },
-                discord: () => copyDiscord(() => print(`copied "${config.contactLinks.discord}"`)),
+                discord: () => copyDiscord(() => print(`copied "${DISCORD_NAME}"`)),
                 whoami: () => print('guest'),
                 ls: () => print(config.projects),
                 sudo: () => print('nice try.', 'err'),
