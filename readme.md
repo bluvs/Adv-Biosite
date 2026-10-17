@@ -169,11 +169,11 @@ The `contactLinks` object dynamically generates buttons and terminal entries bas
 ```js
 contactLinks: {
     discord: "yourdiscord",
-    telegram: "[https://t.me/yourusername](https://t.me/yourusername)",
-    github: "[https://github.com/yourusername](https://github.com/yourusername)",
-    tiktok: "[https://www.tiktok.com/@yourusername](https://www.tiktok.com/@yourusername)",
-    steam: "[https://steamcommunity.com/id/yourusername](https://steamcommunity.com/id/yourusername)",
-    reddit: "[https://www.reddit.com/user/yourusername](https://www.reddit.com/user/yourusername)"
+    telegram: "https://t.me/yourusername",
+    github: "https://github.com/yourusername",
+    tiktok: "https://www.tiktok.com/@yourusername",
+    steam: "https://steamcommunity.com/id/yourusername",
+    reddit: "https://www.reddit.com/user/yourusername"
 }
 ```
 
@@ -190,7 +190,7 @@ How it works:
 Set `musicUrl` to a valid SoundCloud track URL and `trackTitle` to the display name:
 
 ```js
-musicUrl: "[https://soundcloud.com/artist/track-name](https://soundcloud.com/artist/track-name)",
+musicUrl: "https://soundcloud.com/artist/track-name",
 trackTitle: "Artist — Track Name"
 ```
 
